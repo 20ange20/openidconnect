@@ -6,14 +6,13 @@ import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/12
 
 // Configurações do Firebase
 const firebaseConfig = {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
-};
-
+    apiKey: "AIzaSyDisCpz9FQnmMqQHlWd1hoQeaW7NDBesbc",
+    authDomain: "openidconnect-d806f.firebaseapp.com",
+    projectId: "openidconnect-d806f",
+    storageBucket: "openidconnect-d806f.firebasestorage.app",
+    messagingSenderId: "561067357753",
+    appId: "1:561067357753:web:36b9c9f85124705432ffe8"
+  };
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 
