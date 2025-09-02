@@ -1,6 +1,6 @@
 // Importa as funções necessárias do Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 // Configurações do Firebase
@@ -11,52 +11,61 @@ const firebaseConfig = {
     storageBucket: "openidconnect-d806f.firebasestorage.app",
     messagingSenderId: "561067357753",
     appId: "1:561067357753:web:36b9c9f85124705432ffe8"
-  };
+};
 
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(); //configura o firebase authentication
-const db = getFirestore(); //configura o firestore
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-//monitora o estado de autenticação do usuário
-onAuthStateChanged(auth, (user) => {
-    //busca o id do usuário autenticado salvo no localStorage
-    const loggedInUserId = localStorage.getItem('loggedInUserId');
+// Monitora o estado de autenticação do usuário
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const loggedInUserId = localStorage.getItem('loggedInUserId');
 
-    //se o ID estiver no localStorage, tenta obter os dados do Firestore
-    if (loggedInUserId) {
-        console.log(user);
-        const docRef = doc(db, "users", loggedInUserId); //referência ao documento do usuário no firestore
+        // tenta recuperar dados do Firestore (para login por email/senha)
+        if (loggedInUserId) {
+            try {
+                const docRef = doc(db, "users", loggedInUserId);
+                const docSnap = await getDoc(docRef);
 
-        getDoc(docRef) //Busca o documento
-        .then((docSnap) => {
-            //se o documento existir, exibe os dados na interface
-            if (docSnap.exists()) {
-                const userData = docSnap.data();
-                document.getElementById('loggedUserFName').innerText = userData.firstName;
-                document.getElementById('loggedUserEmail').innerText = userData.email;
-                document.getElementById('loggedUserLName').innerText = userData.lastName;
-            } else {
-                console.log("ID não encontrado no Documento");
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    document.getElementById('loggedUserFName').innerText = userData.firstName || "";
+                    document.getElementById('loggedUserLName').innerText = userData.lastName || "";
+                    document.getElementById('loggedUserEmail').innerText = userData.email || "";
+                }
+            } catch (error) {
+                console.error("Erro ao buscar documento:", error);
             }
-        })
-        .catch((error) => {
-            console.log("documento não encontrado");
-        });
+        }
+
+        // dados diretos do objeto user (quando login com Google)
+        if (user.displayName) {
+            document.getElementById('loggedUserFName').innerText = user.displayName;
+        }
+        if (user.email) {
+            document.getElementById('loggedUserEmail').innerText = user.email;
+        }
+        if (user.photoURL) {
+            const img = document.getElementById('userPhoto');
+            img.src = user.photoURL;
+            img.style.display = "block";
+        }
     } else {
-        console.log("ID de usuário não encontrado no localStorage");
+        console.log("Nenhum usuário autenticado");
     }
 });
 
-//Lógica de Logout
+// Lógica de Logout
 const logoutButton = document.getElementById('logout');
 logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUserId'); //remove o ID do LocalStorage
-    signOut(auth) //realiza logout
-    .then(() => {
-        window.location.href = 'index.html'; //redireciona para a página de login
-    })
-    .catch((error) => {
-        console.error('Error Signing out:', error);
-    });
+    localStorage.removeItem('loggedInUserId');
+    signOut(auth)
+        .then(() => {
+            window.location.href = 'index.html';
+        })
+        .catch((error) => {
+            console.error('Erro ao sair:', error);
+        });
 });

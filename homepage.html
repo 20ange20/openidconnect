@@ -35,7 +35,15 @@
         h1 {
             font-size: 2rem;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+
+        #userPhoto {
+            display: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 15px auto;
         }
 
         .info {
@@ -89,6 +97,7 @@
 <body>
     <div class="container">
         <h1>Bem-vindo à sua conta</h1>
+        <img id="userPhoto" />
         <div class="info">Nome: <span id="loggedUserFName"></span></div>
         <div class="info">Sobrenome: <span id="loggedUserLName"></span></div>
         <div class="info">E-mail: <span id="loggedUserEmail"></span></div>
