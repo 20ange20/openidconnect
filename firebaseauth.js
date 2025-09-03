@@ -37,9 +37,9 @@ function showMessage(message, divId) {
     }, 5000);
 }
 
-// ==========================
+
 // Lógica de Cadastro (SignUp)
-// ==========================
+
 const signUp = document.getElementById('submitSignUp');
 if (signUp) {
     signUp.addEventListener('click', (event) => {
@@ -76,9 +76,9 @@ if (signUp) {
     });
 }
 
-// ==========================
+
 // Lógica de Login (SignIn)
-// ==========================
+
 const signIn = document.getElementById('submitSignIn');
 if (signIn) {
     signIn.addEventListener('click', (event) => {
@@ -104,9 +104,8 @@ if (signIn) {
     });
 }
 
-// ==========================
-// Login com Google (Exportado)
-// ==========================
+// Login com Google 
+
 export async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
     try {
